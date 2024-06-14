@@ -99,8 +99,8 @@ KafkaVertxClientDemo/
 - MainConsumerVerticle.java: Entry point for the consumer.
 - KafkaConsumerVerticle.java: Kafka consumer logic.
 
-# Adding New Producers/Consumers
-## Adding a New Producer
+## Adding New Producers/Consumers
+### Adding a New Producer
 
 Create a new Verticle class for the producer (e.g., NewKafkaProducerVerticle.java).
 
@@ -112,7 +112,7 @@ Deploy the new producer verticle in MainVerticle:
 vertx.deployVerticle(new NewKafkaProducerVerticle());
 ```
 
-## Adding a New Consumer
+### Adding a New Consumer
 
 Create a new Verticle class for the consumer (e.g., NewKafkaConsumerVerticle.java).
 
