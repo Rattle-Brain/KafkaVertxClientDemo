@@ -11,7 +11,6 @@ This project demonstrates a Kafka Producer and Consumer implementation using Ver
 - [Project Structure](#project-structure)
 - [Configuration](#configuration)
 - [Adding New Producers/Consumers](#adding-new-producersconsumers)
-- [Running Tests](#running-tests)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -125,6 +124,8 @@ Deploy the new consumer verticle in MainConsumerVerticle:
 vertx.deployVerticle(new NewKafkaConsumerVerticle());
 ```
 
+## Contributing
+
 Contributions are welcome! Please open an issue or submit a pull request.
 
 1. Fork the repository.
@@ -133,7 +134,7 @@ Contributions are welcome! Please open an issue or submit a pull request.
 4. Push to the branch (git push origin feature/AmazingFeature).
 5. Open a pull request.
 
-# License
+## License
 
 This project is licensed under the [Apache 2.0 License](LICENSE).
 
