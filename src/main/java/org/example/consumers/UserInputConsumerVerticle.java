@@ -7,7 +7,7 @@ import org.example.consumers.configs.ConsumerConfigs;
 
 public class UserInputConsumerVerticle extends AbstractVerticle {
 
-    private String topic_name = TopicNames.USER_INPUT_TOPIC;
+    private final String topicName = TopicNames.USER_INPUT_TOPIC;
 
     @Override
     public void start() {
@@ -15,11 +15,11 @@ public class UserInputConsumerVerticle extends AbstractVerticle {
         KafkaConsumer<String, String> consumer = KafkaConsumer.create(vertx, ConsumerConfigs.genericConsumerConfig);
 
         // Subscribe to the topic
-        consumer.subscribe(topic_name, asyncResult -> {
+        consumer.subscribe(topicName, asyncResult -> {
             if (asyncResult.succeeded()) {
-                System.out.println("Subscribed to " + topic_name);
+                System.out.println("Subscribed to " + topicName);
             } else {
-                System.err.println("Failed to subscribe to " + topic_name + ": " + asyncResult.cause().getMessage());
+                System.err.println("Failed to subscribe to " + topicName + ": " + asyncResult.cause().getMessage());
             }
         });
 

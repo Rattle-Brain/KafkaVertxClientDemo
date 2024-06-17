@@ -13,13 +13,13 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class UserInputProducerVerticle extends AbstractVerticle {
-    private Logger LOGGER = LoggerFactory.getLogger(UserInputProducerVerticle.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(UserInputProducerVerticle.class);
     private KafkaProducer<String, String> producer;
-    private String topicName = TopicNames.USER_INPUT_TOPIC;
+    private final String topicName = TopicNames.USER_INPUT_TOPIC;
 
     @Override
     public void start(Promise<Void> startPromise) throws Exception {
-        Map<String, String> config = ProducerConfigs.getGenericProducerConfig();
+        Map<String, String> config = ProducerConfigs.genericProducerConfig;
         producer = KafkaProducer.create(vertx, config, String.class, String.class);
 
         vertx.executeBlocking(promise -> {
