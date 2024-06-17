@@ -37,7 +37,7 @@ public class UserInputProducerVerticle extends AbstractVerticle {
     }
 
     private void sendMessage(String message) {
-        KafkaProducerRecord<String, String> record = KafkaProducerRecord.create("user-input", message);
+        KafkaProducerRecord<String, String> record = KafkaProducerRecord.create("user-input-topic", message);
         producer.send(record, asyncResult -> {
             if (asyncResult.succeeded()) {
                 RecordMetadata rm = asyncResult.result();
