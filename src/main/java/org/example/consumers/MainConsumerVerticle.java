@@ -1,4 +1,6 @@
 package org.example.consumers;
 
-public class MainConsumerVerticle {
+import io.vertx.core.AbstractVerticle;
+
+public class MainConsumerVerticle extends AbstractVerticle {
 }
