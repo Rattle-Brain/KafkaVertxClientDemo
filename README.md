@@ -39,6 +39,41 @@ This project demonstrates a Kafka Producer and Consumer implementation using Ver
     ```bash
     mvn clean install
     ```
+ 
+3. **Kafka Cluster Setup**
+
+If you already have an operational Kafka cluster, you may skip this step. Otherwise, follow these instructions to set up a Kafka cluster using Strimzi.
+
+Refer to the [Strimzi Quickstart Guide](https://strimzi.io/quickstarts) for comprehensive documentation. For this setup, we have utilized the Strimzi quickstart process, but the essential steps are outlined below:
+
+#### Step 1: Create the Namespace
+
+Create a dedicated namespace for Kafka:
+
+   ```bash
+   kubectl create namespace kafka
+   ```
+
+#### Step 2: Deploy the Cluster Operator and Kafka Cluster
+
+Apply the Strimzi cluster operator and the Kafka cluster configuration:
+
+   ```bash
+   kubectl create -f ./kafka-yamls/strimzi-quickstart.yaml
+   kubectl apply -f ./kafka-yamls/kafka-cluster.yaml
+   ```
+
+**Note:** The `strimzi-quickstart.yaml` file can be obtained from the [Strimzi installation page](https://strimzi.io/install/latest?namespace=kafka). Please refer to the [Strimzi Quickstart Guide](https://strimzi.io/quickstarts) for further information. The Kafka cluster has been **configured from scratch** according to this guide.
+
+#### Step 3: Access the Kafka Bootstrap Service
+
+Once the deployment is complete, wait for all resources to be fully created. To access the Kafka bootstrap service, use the following command:
+
+   ```bash
+   kubectl -n kafka port-forward services/strimzi-kafka-cluster-kafka-external-bootstrap 9092:9094 &
+   ```
+
+This command should establish the port-forwarding. If you encounter a connection refusal from the container, please wait a bit longer as the resources may still be initializing.
 
 ## Usage
 
@@ -136,7 +171,7 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 ## License
 
-This project is licensed under the [Apache 2.0 License](LICENSE).
+This project is licensed under the [MIT](LICENSE).
 
 # DISCLAIMER
 
