@@ -11,7 +11,7 @@ public class UserInputConsumerVerticle extends AbstractVerticle {
 
     @Override
     public void start() {
-        // Create a Kafka consumer
+
         KafkaConsumer<String, String> consumer = KafkaConsumer.create(vertx, ConsumerConfigs.genericConsumerConfig);
 
         // Subscribe to the topic

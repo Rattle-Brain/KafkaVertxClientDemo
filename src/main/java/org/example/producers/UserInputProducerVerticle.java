@@ -1,6 +1,7 @@
 package org.example.producers;
 
 import io.vertx.core.*;
+import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.kafka.client.producer.KafkaProducer;
 import io.vertx.kafka.client.producer.KafkaProducerRecord;
 import io.vertx.kafka.client.producer.RecordMetadata;
@@ -11,8 +12,18 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+/**
+ * This class blocks and produces a Vert.x Blocking Exception. This behaviour is expected.
+ *
+ * However, by using an extra worker thread written in plain Java, you can block that thread
+ * indefinitely and, by using the Vert.x Event Bus, we send the event to the Vert.x thread so
+ * it can publish the information to the Kafka Topic.
+ */
 public class UserInputProducerVerticle extends AbstractVerticle {
+    private static final String USER_INPUT_ADDRESS = "user.input";
     private final Logger LOGGER = LoggerFactory.getLogger(UserInputProducerVerticle.class);
     private KafkaProducer<String, String> producer;
     private final String topicName = TopicNames.USER_INPUT_TOPIC;
@@ -22,27 +33,37 @@ public class UserInputProducerVerticle extends AbstractVerticle {
         Map<String, String> config = ProducerConfigs.genericProducerConfig;
         producer = KafkaProducer.create(vertx, config, String.class, String.class);
 
-        vertx.executeBlocking(promise -> {
+        MessageConsumer<String> userInputConsumer = vertx.eventBus().consumer(USER_INPUT_ADDRESS);
+        userInputConsumer.handler(message -> {
+            String userInputMsg = message.body();
+            sendMessageToBroker(userInputMsg);
+        });
+
+        startConsoleInputThread();
+
+        startPromise.complete();
+    }
+
+    private void startConsoleInputThread() {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(() -> {
             Scanner scanner = new Scanner(System.in);
             System.out.print("Enter message: ");
             while (true) {
                 String message = scanner.nextLine();
-                if(message.toLowerCase().equals("exit")){
-                    System.out.println("Exitting Producer...");
+                if (message.toLowerCase().equals("exit")) {
+                    System.out.println("Exiting Producer...");
                     break;
                 }
-                sendMessage(message);
+
+                vertx.eventBus().send(USER_INPUT_ADDRESS, message);
             }
-        }, res -> {
-            if (res.succeeded()) {
-                startPromise.complete();
-            } else {
-                startPromise.fail(res.cause());
-            }
+
+            executorService.shutdownNow();
         });
     }
 
-    private void sendMessage(String message) {
+    private void sendMessageToBroker(String message) {
         KafkaProducerRecord<String, String> record = KafkaProducerRecord.create(topicName, message);
         producer.send(record, asyncResult -> {
             if (asyncResult.succeeded()) {
