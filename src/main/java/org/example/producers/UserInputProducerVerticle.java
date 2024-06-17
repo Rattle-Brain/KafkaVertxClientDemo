@@ -4,6 +4,7 @@ import io.vertx.core.*;
 import io.vertx.kafka.client.producer.KafkaProducer;
 import io.vertx.kafka.client.producer.KafkaProducerRecord;
 import io.vertx.kafka.client.producer.RecordMetadata;
+import org.example.TopicNames;
 import org.example.producers.configs.ProducerConfigs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import java.util.Scanner;
 public class UserInputProducerVerticle extends AbstractVerticle {
     private Logger LOGGER = LoggerFactory.getLogger(UserInputProducerVerticle.class);
     private KafkaProducer<String, String> producer;
+    private String topicName = TopicNames.USER_INPUT_TOPIC;
 
     @Override
     public void start(Promise<Void> startPromise) throws Exception {
@@ -22,9 +24,13 @@ public class UserInputProducerVerticle extends AbstractVerticle {
 
         vertx.executeBlocking(promise -> {
             Scanner scanner = new Scanner(System.in);
+            System.out.print("Enter message: ");
             while (true) {
-                System.out.print("Enter message: ");
                 String message = scanner.nextLine();
+                if(message.toLowerCase().equals("exit")){
+                    System.out.println("Exitting Producer...");
+                    break;
+                }
                 sendMessage(message);
             }
         }, res -> {
@@ -37,7 +43,7 @@ public class UserInputProducerVerticle extends AbstractVerticle {
     }
 
     private void sendMessage(String message) {
-        KafkaProducerRecord<String, String> record = KafkaProducerRecord.create("user-input-topic", message);
+        KafkaProducerRecord<String, String> record = KafkaProducerRecord.create(topicName, message);
         producer.send(record, asyncResult -> {
             if (asyncResult.succeeded()) {
                 RecordMetadata rm = asyncResult.result();
