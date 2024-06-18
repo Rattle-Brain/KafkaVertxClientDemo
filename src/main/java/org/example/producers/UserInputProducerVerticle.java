@@ -71,5 +71,7 @@ public class UserInputProducerVerticle extends AbstractVerticle {
         if (producer != null) {
             producer.close();
         }
+        super.stop(promise);
+        LOGGER.info("Producer Stopped");
     }
 }
