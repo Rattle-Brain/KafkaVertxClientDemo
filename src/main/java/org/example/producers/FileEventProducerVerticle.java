@@ -71,10 +71,12 @@ public class FileEventProducerVerticle extends AbstractVerticle {
                         Path fileName = (Path) event.context();
                         String fullPath = dirPath + "/" + fileName.toString();
 
+                        if(fullPath.contains("swp"))
+                            continue;
+
                         String message = String.format("Event %s occurred on file %s", kind.name(), fullPath);
 
                         vertx.eventBus().send(FILE_EVENT_ADDRESS, message);
-                        System.out.printf("Message (%s) sent\n", message);
                     }
 
                     boolean valid = key.reset();
