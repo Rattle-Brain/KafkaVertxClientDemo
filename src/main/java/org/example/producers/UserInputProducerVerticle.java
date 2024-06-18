@@ -7,6 +7,7 @@ import io.vertx.kafka.client.producer.KafkaProducerRecord;
 import io.vertx.kafka.client.producer.RecordMetadata;
 import org.example.TopicNames;
 import org.example.producers.configs.ProducerConfigs;
+import org.example.producers.utils.ProducerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,23 +30,24 @@ public class UserInputProducerVerticle extends AbstractVerticle {
     private final String topicName = TopicNames.USER_INPUT_TOPIC;
 
     @Override
-    public void start(Promise<Void> startPromise) throws Exception {
+    public void start(Promise<Void> promise) throws Exception {
         Map<String, String> config = ProducerConfigs.genericProducerConfig;
         producer = KafkaProducer.create(vertx, config, String.class, String.class);
 
         MessageConsumer<String> userInputConsumer = vertx.eventBus().consumer(USER_INPUT_ADDRESS);
         userInputConsumer.handler(message -> {
             String userInputMsg = message.body();
-            sendMessageToBroker(userInputMsg);
+            ProducerUtils.sendMessageToBroker(producer, topicName, userInputMsg);
         });
 
         startConsoleInputThread();
 
-        startPromise.complete();
+        promise.complete();
     }
 
     private void startConsoleInputThread() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
+
         executorService.submit(() -> {
             Scanner scanner = new Scanner(System.in);
             System.out.print("Enter message: ");
@@ -60,19 +62,6 @@ public class UserInputProducerVerticle extends AbstractVerticle {
             }
 
             executorService.shutdownNow();
-        });
-    }
-
-    private void sendMessageToBroker(String message) {
-        KafkaProducerRecord<String, String> record = KafkaProducerRecord.create(topicName, message);
-        producer.send(record, asyncResult -> {
-            if (asyncResult.succeeded()) {
-                RecordMetadata rm = asyncResult.result();
-                System.out.printf("Message sent to topic %s partition %d offset %d%n",
-                        rm.getTopic(), rm.getPartition(), rm.getOffset());
-            } else {
-                System.err.println("Message failed to send: " + asyncResult.cause().getMessage());
-            }
         });
     }
 
