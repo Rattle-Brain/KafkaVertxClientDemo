@@ -73,6 +73,11 @@ public class FileEventProducerVerticle extends AbstractVerticle {
 
                         if(fullPath.contains("swp"))
                             continue;
+                        if(fullPath.contains(".xsession"))
+                            continue;
+                        if(fullPath.contains("_history.LOCK"))
+                            continue;
+
 
                         String message = String.format("Event %s occurred on file %s", kind.name(), fullPath);
 
