@@ -1,0 +1,9 @@
+{
+  "type": "record",
+  "name": "UserInput",
+  "fields": [
+    {"name": "topicName", "type": "string"},
+    {"name": "user", "type": "string"},
+    {"name": "msg", "type": "string"}
+  ]
+}
