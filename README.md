@@ -27,20 +27,20 @@ This project demonstrates a Kafka Producer and Consumer implementation using Ver
 
 ## Installation
 
-1. **Clone the Repository**:
+### 1. **Clone the Repository**:
 
     ```bash
     git clone https://github.com/Rattle-Brain/KafkaVertxClientDemo.git
     cd KafkaVertxClientDemo
     ```
 
-2. **Build the Project**:
+### 2. **Build the Project**:
 
     ```bash
     mvn clean install
     ```
- 
-3. **Kafka Cluster Setup**
+
+### 3. **Kafka Cluster Setup**
 
 If you already have an operational Kafka cluster, you may skip this step. Otherwise, follow these instructions to set up a Kafka cluster using Strimzi.
 
@@ -74,6 +74,24 @@ Once the deployment is complete, wait for all resources to be fully created. To 
    ```
 
 This command should establish the port-forwarding. If you encounter a connection refusal from the container, please wait a bit longer as the resources may still be initializing.
+
+### 4. Avro schema registry setup
+
+#### Step 1: Deploy the Schema Registry
+
+Apply the Schema Registry configuration provided:
+
+   ```bash
+   kubectl apply -f ./kafka-yamls/schema-registry.yaml
+   ```
+
+#### Step 3: Access the Avro Schema Registry
+
+Once the deployment is complete, wait for all resources to be fully created. To allow access to the Schema Registry:
+
+   ```bash
+   kubectl -n kafka port-forward services/schema-reg 8090:8090 &
+   ```
 
 ## Usage
 
