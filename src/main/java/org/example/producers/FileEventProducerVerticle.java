@@ -55,7 +55,8 @@ public class FileEventProducerVerticle extends AbstractVerticle {
                 FileSystem fs = vertx.fileSystem();
                 WatchService watchService = FileSystems.getDefault().newWatchService();
                 Path path = Paths.get(dirPath);
-                path.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_DELETE);
+                path.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY,
+                        StandardWatchEventKinds.ENTRY_DELETE);
 
                 while (true) {
                     WatchKey key;
@@ -77,7 +78,6 @@ public class FileEventProducerVerticle extends AbstractVerticle {
                             continue;
                         if(fullPath.contains("_history.LOCK"))
                             continue;
-
 
                         String message = String.format("Event %s occurred on file %s", kind.name(), fullPath);
 

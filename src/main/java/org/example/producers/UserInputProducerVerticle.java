@@ -3,8 +3,9 @@ package org.example.producers;
 import io.vertx.core.*;
 import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.kafka.client.producer.KafkaProducer;
-import io.vertx.kafka.client.producer.KafkaProducerRecord;
-import io.vertx.kafka.client.producer.RecordMetadata;
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericRecord;
 import org.example.TopicNames;
 import org.example.producers.configs.ProducerConfigs;
 import org.example.producers.utils.ProducerUtils;
@@ -15,6 +16,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.example.schemaRegistry.*;
 
 /**
  * This class blocks and produces a Vert.x Blocking Exception. This behaviour is expected.
@@ -58,11 +61,33 @@ public class UserInputProducerVerticle extends AbstractVerticle {
                     break;
                 }
 
+                message = jsonifyUserInput(message);
+
                 vertx.eventBus().send(USER_INPUT_ADDRESS, message);
             }
 
             executorService.shutdownNow();
         });
+    }
+
+    private String jsonifyUserInput(String message) {
+        try {
+            String user = System.getProperty("user.name");
+            // Get the schema from registry
+            Schema schema = SchemaRegistryUtils.retrieveSchemaFromRegistry(SchemaRegistryUtils.UINPUT_TOPIC_SCHEMA_URL);
+            GenericRecord avroRecord = new GenericData.Record(schema);
+
+            // Fill the fields of the avro schema with data
+            avroRecord.put("user", user);
+            avroRecord.put("msg", message);
+            avroRecord.put("topicName", topicName);
+
+            return avroRecord.toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

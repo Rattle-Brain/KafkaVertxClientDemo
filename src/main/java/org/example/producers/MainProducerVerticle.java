@@ -7,7 +7,7 @@ public class MainProducerVerticle extends AbstractVerticle {
 
     @Override
     public void start() {
-        //vertx.deployVerticle(new UserInputProducerVerticle());
-        vertx.deployVerticle(new FileEventProducerVerticle());
+        vertx.deployVerticle(new UserInputProducerVerticle());
+        //vertx.deployVerticle(new FileEventProducerVerticle());
     }
 }

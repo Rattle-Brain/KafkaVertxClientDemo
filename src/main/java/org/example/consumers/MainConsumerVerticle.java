@@ -6,7 +6,7 @@ import org.example.producers.FileEventProducerVerticle;
 public class MainConsumerVerticle extends AbstractVerticle {
     @Override
     public void start() {
-        //vertx.deployVerticle(new UserInputConsumerVerticle());
-        vertx.deployVerticle(new FileEventConsumerVerticle());
+        vertx.deployVerticle(new UserInputConsumerVerticle());
+        //vertx.deployVerticle(new FileEventConsumerVerticle());
     }
 }

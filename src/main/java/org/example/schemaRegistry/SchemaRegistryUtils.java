@@ -1,4 +1,4 @@
-package com.kafka.producer.utils;
+package org.example.schemaRegistry;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public class SchemaRegistryUtils {
 
-    public static final String SCHEMA_URL = "http://localhost:8090/subjects/json-file-events/versions/1";
+    public static final String UINPUT_TOPIC_SCHEMA_URL = "http://localhost:8090/subjects/uinput-topic-value/versions/1";
 
     /**
      * Tries to connect to a schema registry by url and retrieve a schema for later use.
