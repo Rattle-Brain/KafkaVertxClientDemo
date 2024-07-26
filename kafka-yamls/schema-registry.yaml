@@ -31,12 +31,18 @@ spec:
           ports:
             - containerPort: 8090
           env:
-          - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
-            value: 10.98.94.166:9094 
-          - name: SCHEMA_REGISTRY_HOST_NAME
-            value: schemareg
-          - name: SCHEMA_REGISTRY_LISTENERS
-            value: http://0.0.0.0:8090
-
-
+            - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
+              value: strimzi-kafka-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
+            - name: SCHEMA_REGISTRY_HOST_NAME
+              value: schemareg
+            - name: SCHEMA_REGISTRY_LISTENERS
+              value: http://0.0.0.0:8090
+          resources:
+            requests:
+              cpu: 100m
+              memory: 400Mi
+            limits:
+              cpu: 1000m
+              memory: 3Gi          
+  
             # k exec -it nombre-pod -- nslookup
